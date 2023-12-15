@@ -1,0 +1,140 @@
+/* 
+clip-path + polygon 语法
+伪类 :has
+伪元素 ::after ::before
+组合选择器 >
+@property
+filter
+transition
+inset
+*/
+
+
+:root {
+  font-size: 1.5rem;
+}
+
+body {
+  height: 100vh;
+  width: 100%;
+  margin: 0;
+
+  color: black;
+  background: #0c0c0b;
+
+  display: grid;
+  place-content: center;
+  overflow: hidden;
+}
+
+.button {
+  width: 7rem;
+  height: 2.5rem;
+  display: grid;
+
+  color: white;
+
+  position: relative;
+  place-content: center;
+  border-radius: 0.5rem;
+}
+
+/* 实现默认背景模糊渐变绿 */
+.button::before {
+  content: "";
+
+  position: absolute;
+  inset: 0;
+  border-radius: 0.5rem;
+  background: linear-gradient(135deg, #37ff98, #1af851, #5bf279, #00ff33);
+
+  filter: blur(0.5rem);
+  opacity: 0.5;
+  transition: opacity 300ms, filter 300ms;
+}
+/* 通过hoverzone触发后，去掉背景模糊，最上层由伪元素button::after 黑色背景遮盖，产生绿色边框错觉 */
+.button::after {
+  content: "";
+  position: absolute;
+  inset: 0.125rem;
+  border-radius: 0.375rem;
+  background: black;
+  z-index: 1;
+  transition: border-radius 300ms;
+}
+.button:has(.hoverzone:hover)::before {
+  filter:none
+}
+.button:has(.hoverzone:hover)::after {
+  border-radius: none;
+}
+.hoverzone {
+  position: absolute;
+  inset: 0;
+  z-index: 10;
+  cursor: pointer;
+}
+/* 让soft和sharp交替显示，通过hoverzone的伪元素触发 */
+
+
+.label {
+  position: absolute;
+  inset: 0;
+
+  display: grid;
+  place-content: center;
+  z-index: 2;
+  transition: opacity 300ms, transform 300ms;
+}
+
+
+.button:has(.hoverzone:hover) > .label.soft {
+  opacity: 0;
+  transform: translate(0.5rem, 0.5rem);
+}
+.label.sharp {
+  opacity: 0;
+  transform: translate(-0.5rem, -0.5rem);
+}
+.button:has(.hoverzone:hover) > .label.sharp {
+  opacity: 1;
+  transform: none;
+}
+
+/*  控制边框颜色和形变， */
+
+@property --shadowlength {
+  syntax: "<length>";
+  initial-value: 0.5rem;
+  inherits: true;
+}
+@property --anim {
+  syntax: "<number>";
+  initial-value: 0;
+  inherits: true;
+}
+
+
+.sharpshadow {
+  --anim: 0;
+  --shadowlength: 0.75rem;
+
+  position: absolute;
+  inset: 0 calc(0px - var(--anim) * var(--shadowlength)) calc(0px - var(--anim) * var(--shadowlength)) 0;
+  border-radius: 0.5rem;
+  background: linear-gradient(135deg, #37ff98, #1af851, #5bf279, #00ff33);
+  clip-path: polygon(
+		0 0,
+		calc(100% - var(--shadowlength) * var(--anim)) 0%,
+		100% calc(var(--shadowlength) * var(--anim)),
+		100% 100%,
+		calc(var(--shadowlength) * var(--anim)) 100%,
+		0 calc(100% - var(--shadowlength) * var(--anim))
+	);
+  transition: --anim 300ms, border-radius 300ms;
+}
+
+.button:has(.hoverzone:hover) > .sharpshadow {
+  border-radius: 0;
+  --anim: 1;
+}

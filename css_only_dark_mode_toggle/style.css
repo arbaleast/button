@@ -1,0 +1,102 @@
+/*
+  📣 Note: all sizes are in ems, so change the .toggle font-size to
+  scale to whatever size you need.
+  currentColor
+  outline
+*/
+/* 👈 change this to scale */
+
+/* 开关边框 */
+.toggle {
+  font-size: 2rem;
+  position: relative;
+  width: 3.75em;
+  height: 2em;
+  border: .125em solid currentColor;
+  border-radius: 2em;
+  cursor: pointer;
+}
+/* 定义黑色圆圈 */
+.toggle span {
+  width: 1.5em;
+  height: 1.5em;
+  display: block;
+  position: absolute;
+  top: .25em;
+  left: .25em;
+
+  background-color: currentColor;
+  border-radius: 2em;
+  text-indent: -9999px;
+  overflow: hidden;
+  z-index: 2;
+  transition: left .25s;
+}
+/* 应该是创建两个伪元素 */
+.toggle::before,
+.toggle::after {
+  content: '';
+  display: block;
+  border-radius: 1em;
+  position: absolute;
+  z-index: 1;
+}
+/* 月亮图标 */
+.toggle::after {
+  box-shadow: .25em .25em #5901d8;
+  height: 1.125em;
+  right: .9em;
+  top: .125em;
+  width: 1.125em;
+}
+
+/* 太阳图标 */
+.toggle::before {
+  width: .625em;
+  height: .625em;
+  top: .7em;
+  left: .7em;
+  outline: .25em dotted #ffc409 ;
+  outline-offset: .125em;
+  background-color: #ffc409;
+}
+
+/* 黑色圆圈 移动触发 */
+input:checked ~ .toggle span {
+  left: 2em;
+}
+/* 背景设置渐变颜色， */
+body,
+html {
+  margin: 0;
+  padding: 0;
+  min-height: 100vh;
+}
+
+body:has(#darkmode-toggle:checked) {
+  background-position: 100% 100%;
+  color: #d0d0d0d0;
+}
+
+.sr-only {
+  position: absolute;
+  left: -9999px;
+  opacity: 0;
+}
+
+body {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: #1e1e1e;
+  background: linear-gradient(to bottom right,
+    #eefff4 25%,
+    #a0ffd9 50%,
+    #5c0095 75%,
+    #01072a
+  );
+  background-size: 300% 300%;
+  background-position: top left;
+  transition: background-color .25s;
+  transition: background-position .5s;
+}
